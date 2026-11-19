@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>2026 운빨능력 검정 시험 | 무드커넥트 × 그라운드 비</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      --luck-yellow: #FFE600;
+      --luck-cream: #FFFDF2;
+      --luck-orange: #FF6B00;
+      --ink-black: #111111;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #18181b;
+      color: var(--ink-black);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 모바일 중심 앱 프레임 (데스크탑에서도 세련된 모바일 뷰 유지) */
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      background-color: var(--luck-cream);
+      min-height: 100vh;
+      position: relative;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.45);
+      overflow-x: clip;
+    }
+
+    /* 네오 브루탈리즘 카드 프레임 (PPT 화이트 라운드 박스 계승) */
+    .ppt-frame {
+      background: #FFFFFF;
+      border: 2px solid var(--ink-black);
+      border-radius: 22px;
+      box-shadow: 4px 4px 0px var(--ink-black);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+    }
+
+    .ppt-frame-sm {
+      background: #FFFFFF;
+      border: 2px solid var(--ink-black);
+      border-radius: 14px;
+      box-shadow: 3px 3px 0px var(--ink-black);
+    }
+
+    .btn-brutal {
+      border: 2px solid var(--ink-black);
+      box-shadow: 3px 3px 0px var(--ink-black);
+      transition: all 0.15s ease;
+    }
+
+    .btn-brutal:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--ink-black);
+    }
+
+    /* 스크롤 등장 애니메이션 (PPT 슬라이드 전환 모션) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px) scale(0.98);
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.12s; }
+    .reveal-delay-2 { transition-delay: 0.24s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+
+    /* 부유 애니메이션 */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+      50% { transform: translateY(-6px) rotate(1.5deg); }
+    }
+    .animate-float {
+      animation: floatSlow 3.6s ease-in-out infinite;
+    }
+
+    /* 골드 쉬머 텍스트 효과 */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer-badge {
+      background: linear-gradient(90deg, #FFE600 0%, #FFF799 50%, #FFE600 100%);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* 실시간 펄스 닷 */
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.45); opacity: 0.4; }
+    }
+    .live-dot {
+      animation: pulseDot 1.6s infinite;
+    }
+
+    /* 2026년 12월 vs 2027년 대비 전환 */
+    .year-card {
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* 커스텀 스크롤바 숨김 (가로 칩 영역) */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+
+  <!-- 상단 고정 PPT 헤더 바 -->
+  <header id="stickyHeader" class="sticky top-0 z-40 bg-[#FFFDF2]/95 backdrop-blur-md border-b-2 border-[#111111] transition-all">
+    <!-- 최상단 옐로우 띠 -->
+    <div class="h-1.5 w-full bg-[#FFE600]"></div>
+    <div class="px-4 py-2.5 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2">
+        <!-- 미니 엠블럼 -->
+        <div class="w-7 h-7 rounded-full bg-[#FFE600] border-2 border-[#111111] flex items-center justify-center font-black text-[11px] shadow-[1.5px_1.5px_0_#111]">
+          運
+        </div>
+        <span class="font-extrabold text-[14px] tracking-tight text-[#111111]">2026 운빨능력 검정시험</span>
+      </a>
+      <div class="flex items-center gap-2.5">
+        <a href="#chapter-8" class="text-[11px] font-extrabold bg-[#FFE600] px-2.5 py-1 rounded-full border border-[#111111] active:scale-95 transition">
+          사주 예약
+        </a>
+        <span class="font-black text-[#FF6B00] tracking-tighter text-sm select-none">///</span>
+      </div>
+    </div>
+    <!-- 읽기 진행도 바 -->
+    <div class="w-full h-[3px] bg-black/10">
+      <div id="scrollProgress" class="h-full bg-[#FF6B00] w-0 transition-all duration-100"></div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       HERO SECTION (Slide 01 오마주)
+  ========================================================== -->
+  <section id="top" class="bg-[#FFE600] px-5 pt-7 pb-10 border-b-2 border-[#111111] relative overflow-hidden">
+    <!-- 배경 장식 패턴 -->
+    <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full border-2 border-dashed border-black/20 pointer-events-none"></div>
+    <div class="absolute -left-10 bottom-12 w-28 h-28 rounded-full bg-white/30 pointer-events-none"></div>
+
+    <!-- 상단 프로젝트 뱃지 -->
+    <div class="flex items-center justify-between mb-4">
+      <span class="inline-flex items-center gap-1.5 bg-[#111111] text-[#FFE600] text-xs font-extrabold px-3 py-1.5 rounded-full">
+        <span>✦</span> 커넥서님 프로젝트 #3
+      </span>
+      <span class="text-xs font-black text-[#111111]/70">VOL. 2026 DEC</span>
+    </div>
+
+    <!-- 메인 타이틀 -->
+    <p class="text-[15px] font-extrabold text-[#111111] mb-1 tracking-tight">
+      당신의 순수한 운빨을 시험하라!
+    </p>
+    <h1 class="text-[36px] leading-[1.14] font-black tracking-tight text-[#111111] mb-5">
+      2026 운빨능력<br/>검정 시험
+    </h1>
+
+    <!-- 주최 / 협업 박스 (PPT 하단 라운드 박스 재현) -->
+    <div class="ppt-frame-sm px-4 py-2.5 mb-6 flex items-center justify-between text-xs font-bold">
+      <div class="flex items-center gap-1.5">
+        <span class="text-neutral-500">주최</span>
+        <span class="font-black text-[#111111]">무드커넥트</span>
+      </div>
+      <span class="text-neutral-300">|</span>
+      <div class="flex items-center gap-1.5">
+        <span class="text-neutral-500">협업</span>
+        <span class="font-black text-[#111111]">그라운드 비</span>
+      </div>
+    </div>
+
+    <!-- 신묘한힘 · 운빨시험 일러스트 포스터 카드 -->
+    <div class="ppt-frame p-4 bg-[#FFFDF2] mb-5 animate-float">
+      <div class="border-2 border-[#111111] rounded-2xl bg-[#FFE600] p-3.5 relative overflow-hidden">
+        <!-- 포스터 상단 미니 헤더 -->
+        <div class="text-center border-b-2 border-[#111111] pb-2 mb-2">
+          <div class="text-[13px] font-black tracking-tight">2026 운빨능력 검정 시험</div>
+          <div class="text-[10px] font-bold text-[#111111]/80">✦ 당신의 순수한 운빨을 시험하라! ✦</div>
+        </div>
+
+        <!-- 커스텀 SVG 캐릭터 일러스트 (운빨 요정 & 돋보기 & 신묘한힘 말풍선) -->
+        <div class="relative flex justify-center items-center py-2">
+          <svg viewBox="0 0 260 175" class="w-full max-w-[240px] h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- 배경 집중선 -->
+            <g stroke="#FF9900" stroke-width="2.5" stroke-linecap="round" opacity="0.55">
+              <line x1="20" y1="25" x2="48" y2="42" />
+              <line x1="240" y1="25" x2="212" y2="42" />
+              <line x1="12" y1="88" x2="42" y2="88" />
+              <line x1="248" y1="88" x2="218" y2="88" />
+              <line x1="28" y1="145" x2="55" y2="130" />
+              <line x1="232" y1="145" x2="205" y2="130" />
+            </g>
+
+            <!-- 신묘한힘 말풍선 -->
+            <g transform="translate(88, 6)">
+              <rect x="0" y="0" width="84" height="28" rx="14" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"/>
+              <polygon points="36,28 42,36 48,28" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"/>
+              <line x1="37" y1="27" x2="47" y2="27" stroke="#FFFFFF" stroke-width="3"/>
+              <text x="42" y="18" text-anchor="middle" font-size="11.5" font-weight="900" fill="#111111">신묘한힘!</text>
+            </g>
+
+            <!-- 캐릭터 머리 새싹 -->
+            <path d="M130 52 C125 38, 110 38, 114 48 C117 54, 127 53, 130 52 Z" fill="#22C55E" stroke="#111111" stroke-width="2.2"/>
+            <path d="M130 52 C135 38, 150 38, 146 48 C143 54, 133 53, 130 52 Z" fill="#4ADE80" stroke="#111111" stroke-width="2.2"/>
+
+            <!-- 캐릭터 몸통 (행운의 옐로우 마스코트) -->
+            <rect x="92" y="52" width="76" height="82" rx="36" fill="#FFF380" stroke="#111111" stroke-width="3"/>
+            <!-- 볼터치 -->
+            <ellipse cx="108" cy="92" rx="6" ry="3.5" fill="#FF6B00" opacity="0.5"/>
+            <ellipse cx="152" cy="92" rx="6" ry="3.5" fill="#FF6B00" opacity="0.5"/>
+            <!-- 반짝이는 눈 -->
+            <circle cx="115" cy="82" r="4.5" fill="#111111"/>
+            <circle cx="113.5" cy="80.5" r="1.5" fill="#FFFFFF"/>
+            <circle cx="145" cy="82" r="4.5" fill="#111111"/>
+            <circle cx="143.5" cy="80.5" r="1.5" fill="#FFFFFF"/>
+            <!-- 웃는 입 -->
+            <path d="M123 93 Q130 101 137 93" fill="none" stroke="#111111" stroke-width="2.6" stroke-linecap="round"/>
+
+            <!-- 왼손 두루마리(부적) -->
+            <g transform="translate(56, 78) rotate(-14)">
+              <rect x="0" y="0" width="28" height="36" rx="4" fill="#FFFFFF" stroke="#111111" stroke-width="2.4"/>
+              <text x="14" y="22" text-anchor="middle" font-size="13" font-weight="900" fill="#FF6B00">大吉</text>
+            </g>
+
+            <!-- 오른손 돋보기 -->
+            <g transform="translate(166, 74)">
+              <line x1="16" y1="26" x2="30" y2="42" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="10" cy="16" r="14" fill="#E0F2FE" stroke="#111111" stroke-width="3"/>
+              <path d="M4 11 A8 8 0 0 1 13 8" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+            </g>
+
+            <!-- 하단 '운빨시험' 타이틀 배너 -->
+            <g transform="translate(34, 124) rotate(-3)">
+              <rect x="3" y="4" width="192" height="40" rx="10" fill="#111111"/>
+              <rect x="0" y="0" width="192" height="40" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+              <text x="96" y="28" text-anchor="middle" font-size="24" font-weight="900" fill="#111111" letter-spacing="2">운빨시험</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 인터랙티브 미니 위젯: 오늘의 순수 운빨 측정기 -->
+    <div class="ppt-frame p-4 bg-white">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-black text-[#FF6B00] uppercase tracking-wider">● MINI LUCKY TEST</span>
+        <span class="text-[11px] font-bold text-neutral-500">터치해서 기운 확인</span>
+      </div>
+      <div id="luckyResultBox" class="bg-[#FFFDF2] border-2 border-[#111111] rounded-xl p-3 mb-3 text-center">
+        <p id="luckyScoreText" class="text-sm font-black text-[#111111]">당신의 2026 연말 운빨 지수는 몇 점일까요?</p>
+        <p id="luckyItemText" class="text-xs font-semibold text-neutral-600 mt-1">아래 버튼을 눌러 오늘의 개운(開運) 힌트를 뽑아보세요!</p>
+      </div>
+      <button type="button" onclick="drawDailyLuck()" class="btn-brutal w-full py-3 rounded-xl bg-[#111111] text-[#FFE600] font-black text-sm flex items-center justify-center gap-2">
+        <span>🎲</span>
+        <span id="luckyBtnLabel">나의 순수 운빨 테스트하기</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       스토리텔링 본문 (8 Chapters)
+  ========================================================== -->
+  <main class="px-5 py-9 space-y-10">
+
+    <!-- -------------------------------------------------------
+         CHAPTER 01: 서울의 문화 동네들
+    -------------------------------------------------------- -->
+    <section id="chapter-1" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">01</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">SEOUL LOCAL SCENE</span>
+      </div>
+
+      <div class="ppt-frame p-5">
+        <!-- 서울특별시 시그니처 심볼 + 타이틀 -->
+        <div class="inline-flex items-center gap-2.5 bg-[#F8FAFC] border-2 border-[#111111] rounded-full px-3.5 py-1.5 mb-4">
+          <!-- 서울 심볼 SVG -->
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="7" r="4" fill="#E11D48"/>
+            <path d="M7 18C10 13 15 14 16 20C17 25 12 27 9 25" stroke="#16A34A" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M25 13C22 18 19 23 18 28" stroke="#0284C7" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <span class="font-black text-sm tracking-tight text-[#111111]">서울특별시</span>
+        </div>
+
+        <h2 class="text-[23px] leading-[1.32] font-black text-[#111111] mb-3 break-keep">
+          “서울은 이쁜 문화동네들이 많네”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-4 break-keep">
+          <strong class="text-[#111111] bg-[#FFE600]/70 px-1 rounded">성수, 신촌, 인사동, 홍대 등</strong> 저마다의 결을 지닌 서울의 문화 동네들은 단순한 상권을 넘어 하나의 라이프스타일 씬(Scene)을 형성합니다. 골목마다 축적된 고유한 취향의 밀도와 감각적인 공간 큐레이션이 도시 전체에 생동하는 영감을 불어넣습니다.
+        </p>
+
+        <!-- 서울 대표 문화 동네 태그 -->
+        <div class="flex flex-wrap gap-1.5 mb-5">
+          <span class="text-xs font-black bg-[#FFE600] border border-[#111111] px-2.5 py-1 rounded-full">#성수</span>
+          <span class="text-xs font-black bg-[#FFFDF2] border border-[#111111] px-2.5 py-1 rounded-full">#신촌</span>
+          <span class="text-xs font-black bg-[#FFFDF2] border border-[#111111] px-2.5 py-1 rounded-full">#인사동</span>
+          <span class="text-xs font-black bg-[#FFFDF2] border border-[#111111] px-2.5 py-1 rounded-full">#홍대 등</span>
+        </div>
+
+        <!-- PPT 3원형 컷 모티브 카드 -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="border-2 border-[#111111] rounded-2xl p-2.5 bg-[#FFFDF2] text-center">
+            <div class="w-11 h-11 mx-auto mb-1.5 rounded-full bg-[#FFE600] border-2 border-[#111111] flex items-center justify-center text-lg">
+              🏯
+            </div>
+            <div class="text-xs font-black">한옥의 결</div>
+            <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">전통과 현대의 공존</div>
+          </div>
+          <div class="border-2 border-[#111111] rounded-2xl p-2.5 bg-[#FFFDF2] text-center">
+            <div class="w-11 h-11 mx-auto mb-1.5 rounded-full bg-[#FFEDD5] border-2 border-[#111111] flex items-center justify-center text-lg">
+              🚸
+            </div>
+            <div class="text-xs font-black">감각적 스트리트</div>
+            <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">걷고 싶은 거리 풍경</div>
+          </div>
+          <div class="border-2 border-[#111111] rounded-2xl p-2.5 bg-[#FFFDF2] text-center">
+            <div class="w-11 h-11 mx-auto mb-1.5 rounded-full bg-[#E0F2FE] border-2 border-[#111111] flex items-center justify-center text-lg">
+              🛍️
+            </div>
+            <div class="text-xs font-black">취향의 골목</div>
+            <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">로컬 편집숍·아지트</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 02: 우리 광주도 있긴 해. 동명동
+    -------------------------------------------------------- -->
+    <section id="chapter-2" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">02</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">OUR LOCAL PRIDE</span>
+      </div>
+
+      <div class="ppt-frame p-5 relative overflow-hidden">
+        <!-- 광주·전남 통합 엠블럼 뱃지 (PPT 00:08 슬라이드 모티브) -->
+        <div class="inline-flex items-center gap-2.5 bg-[#FFF7ED] border-2 border-[#111111] rounded-full px-3.5 py-1.5 mb-4">
+          <svg width="28" height="18" viewBox="0 0 44 26" fill="none">
+            <circle cx="14" cy="13" r="10" fill="#F97316"/>
+            <path d="M9 14C12 10 16 10 19 14" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="30" cy="13" r="10" fill="#EAB308"/>
+            <path d="M25 14C28 10 32 10 35 14" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="font-black text-sm tracking-tight text-[#111111]">광주·전남 통합</span>
+        </div>
+
+        <h2 class="text-[23px] leading-[1.32] font-black text-[#111111] mb-3 break-keep">
+          “우리 광주도 있긴 해. <span class="underline decoration-[#FFE600] decoration-[6px] underline-offset-2">동명동</span>”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-4 break-keep">
+          우리 곁에도 그에 못지않은 로컬의 보석이 존재합니다. 바로 광주 문화의 심장, <strong class="text-[#111111]">동명동</strong>입니다. 세월의 흔적이 담긴 주택 골목 사이로 트렌디한 카페와 독립 크리에이터들의 공간이 어우러지며, 광주·전남만의 따뜻하고 감도 높은 로컬 문화를 피워내고 있습니다.
+        </p>
+
+        <!-- 동명동 무드 카드 -->
+        <div class="bg-[#111111] text-white rounded-2xl p-4 flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[11px] font-extrabold text-[#FFE600] mb-0.5">GWANGJU DONGMYEONG-DONG</div>
+            <div class="text-sm font-black">골목마다 피어나는 취향과 온기</div>
+            <div class="text-xs text-neutral-300 mt-1">오래된 주택가 × 감각적 로컬 아지트의 만남</div>
+          </div>
+          <div class="w-12 h-12 shrink-0 rounded-2xl bg-[#FFE600] text-[#111111] flex items-center justify-center text-2xl font-black">
+            🏘️
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 03: 문화의 기원 - 모여서(모임)
+    -------------------------------------------------------- -->
+    <section id="chapter-3" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">03</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">ORIGIN OF CULTURE</span>
+      </div>
+
+      <div class="ppt-frame p-5">
+        <h2 class="text-[22px] leading-[1.35] font-black text-[#111111] mb-3 break-keep">
+          “그럼 이런 문화는 어떻게 생긴걸까?<br/>
+          <span class="text-[#FF6B00]">모여서(모임).</span> 그럼 어떻게 모여볼까?”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-5 break-keep">
+          거대한 도시 문화도 결국 <strong class="text-[#111111]">‘비슷한 결을 가진 사람들의 작은 모임’</strong>에서 시작됩니다. 혼자일 땐 스쳐 지나갈 일상이 함께 모이는 순간 하나의 문화적 현상이 됩니다. 그렇다면 지금, 우리를 가장 설레게 하고 자연스럽게 하나로 묶어줄 ‘모임의 매개체’는 무엇일까요?
+        </p>
+
+        <!-- 인터랙티브 연결 프로세스 다이어그램 -->
+        <div class="bg-[#FFFDF2] border-2 border-[#111111] rounded-2xl p-3.5">
+          <div class="text-[11px] font-extrabold text-neutral-500 mb-2.5 text-center">단계를 탭하여 문화 탄생 과정 보기</div>
+          <div class="grid grid-cols-3 gap-2 items-center text-center">
+            <button type="button" onclick="selectFlowStep(0)" id="flow-btn-0" class="flow-step active border-2 border-[#111111] rounded-xl py-2.5 px-1.5 bg-[#FFE600] font-black text-xs transition">
+              01. 취향 발견
+            </button>
+            <button type="button" onclick="selectFlowStep(1)" id="flow-btn-1" class="flow-step border-2 border-[#111111] rounded-xl py-2.5 px-1.5 bg-white font-black text-xs transition">
+              02. 작은 모임
+            </button>
+            <button type="button" onclick="selectFlowStep(2)" id="flow-btn-2" class="flow-step border-2 border-[#111111] rounded-xl py-2.5 px-1.5 bg-white font-black text-xs transition">
+              03. 문화 탄생
+            </button>
+          </div>
+          <div id="flowDescBox" class="mt-3 pt-2.5 border-t border-dashed border-neutral-300 text-xs font-bold text-[#111111] text-center leading-relaxed">
+            ✨ 각자의 취향과 호기심을 가진 개인들이 동네의 공간으로 모여듭니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 04: 우리가 주목한 테마 "운" (운테리어 · 개운템)
+    -------------------------------------------------------- -->
+    <section id="chapter-4" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">04</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">CORE THEME : LUCK</span>
+      </div>
+
+      <div class="ppt-frame p-5">
+        <!-- 영상 속 웨이팅 170팀 현장 열기 배너 -->
+        <div class="bg-[#111111] text-white rounded-2xl p-3.5 mb-4 flex items-center justify-between border-2 border-[#111111]">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FF6B00] live-dot"></span>
+            <div>
+              <div class="text-[10px] font-bold text-neutral-400">TREND PROOF · 현장 열기</div>
+              <div class="text-sm font-black tracking-tight">실시간 웨이팅 <span class="text-[#FFE600] text-base">170팀</span> 돌파!</div>
+            </div>
+          </div>
+          <span class="text-[11px] font-extrabold bg-[#FFE600] text-[#111111] px-2.5 py-1 rounded-lg">HOT</span>
+        </div>
+
+        <h2 class="text-[23px] leading-[1.32] font-black text-[#111111] mb-3 break-keep">
+          “우리가 주목한 테마는 <span class="bg-[#FFE600] px-1.5 rounded">‘운(運)’</span><br/>
+          <span class="text-lg font-extrabold text-neutral-600">(ex. 운테리어, 개운템)</span>”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-4 break-keep">
+          불확실성이 높아진 시대, MZ세대는 운을 단순한 미신이 아닌 <strong class="text-[#111111]">‘일상을 긍정적으로 설계하는 유쾌한 놀이이자 자기 확신의 도구’</strong>로 소비합니다. 우리는 남녀노소 모두가 공감하고 함께 웃으며 대화의 물꼬를 틀 수 있는 가장 강력한 연결 고리로 ‘운(Luck)’을 선택했습니다.
+        </p>
+
+        <!-- 인터랙티브 키워드 탭 (운테리어 / 개운템 / 운빨검정) -->
+        <div class="flex gap-2 mb-3">
+          <button type="button" onclick="switchLuckTab('unterier')" id="tab-unterier" class="luck-tab flex-1 py-2 rounded-xl border-2 border-[#111111] bg-[#FFE600] font-black text-xs transition">
+            #운테리어
+          </button>
+          <button type="button" onclick="switchLuckTab('gaewun')" id="tab-gaewun" class="luck-tab flex-1 py-2 rounded-xl border-2 border-[#111111] bg-white font-black text-xs transition">
+            #개운템
+          </button>
+          <button type="button" onclick="switchLuckTab('exam')" id="tab-exam" class="luck-tab flex-1 py-2 rounded-xl border-2 border-[#111111] bg-white font-black text-xs transition">
+            #운빨검정
+          </button>
+        </div>
+
+        <div id="luckTabContent" class="bg-[#FFFDF2] border-2 border-[#111111] rounded-2xl p-4">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-lg">🪴</span>
+            <span class="font-black text-sm text-[#111111]">운테리어 (운 + 인테리어)</span>
+          </div>
+          <p class="text-xs leading-relaxed text-neutral-700 font-medium">
+            공간의 배치와 컬러, 오브제 하나를 바꾸며 일상의 기운과 흐름을 긍정적으로 전환하는 2026 대표 라이프스타일 트렌드입니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 05: 다가올 2027년 vs 우리가 주목한 2026년 12월
+    -------------------------------------------------------- -->
+    <section id="chapter-5" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">05</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">PERSPECTIVE SHIFT</span>
+      </div>
+
+      <div class="ppt-frame p-5">
+        <h2 class="text-[22px] leading-[1.35] font-black text-[#111111] mb-4 break-keep">
+          “다가올 2027년.<br/>
+          그렇지만 우리가 주목한 건 <span class="text-[#FF6B00]">2026년 12월</span>”
+        </h2>
+
+        <!-- PPT 00:31~00:34 크기 대비 애니메이션 재현 카드 -->
+        <div class="grid grid-cols-2 gap-3 mb-4 items-center">
+          <div id="card2026" onclick="focusYear('2026')" class="year-card cursor-pointer border-2 border-[#111111] rounded-2xl p-4 bg-[#FFE600] shadow-[3px_3px_0_#111] text-center scale-100">
+            <span class="inline-block text-[10px] font-black bg-[#111111] text-[#FFE600] px-2 py-0.5 rounded-full mb-1.5">OUR FOCUS</span>
+            <div class="text-2xl font-black leading-none text-[#111111]">2026</div>
+            <div class="text-xl font-black text-[#111111] mt-0.5">12월</div>
+          </div>
+
+          <div id="card2027" onclick="focusYear('2027')" class="year-card cursor-pointer border-2 border-neutral-300 rounded-2xl p-4 bg-neutral-50 text-center opacity-65 scale-95">
+            <span class="inline-block text-[10px] font-bold bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full mb-1.5">NEXT YEAR</span>
+            <div class="text-xl font-extrabold text-neutral-500 py-2">2027</div>
+          </div>
+        </div>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium break-keep">
+          연말이 되면 수많은 시선이 막연히 다가올 2027년의 새해만을 향합니다. 하지만 우리가 진짜 주목한 시간은 바로 지금, <strong class="text-[#111111]">‘2026년 12월’</strong>입니다. 한 해의 끝자락은 단순한 소모의 시간이 아니라, 지난 1년의 서사를 정리하고 내일의 밀도를 결정짓는 가장 결정적인 골든타임이기 때문입니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 06: 좋은 시작을 위한 좋은 마무리
+    -------------------------------------------------------- -->
+    <section id="chapter-6" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">06</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">THE RITUAL OF CLOSURE</span>
+      </div>
+
+      <div class="ppt-frame p-5 bg-[#111111] text-white">
+        <div class="shimmer-badge text-[#111111] text-[11px] font-black px-3 py-1 rounded-full inline-block mb-4">
+          ✦ CORE MESSAGE
+        </div>
+
+        <div class="border-2 border-[#FFE600] rounded-2xl p-5 text-center mb-4 bg-white/5">
+          <p class="text-[22px] font-extrabold text-neutral-200 leading-snug">
+            좋은 시작을 위한
+          </p>
+          <p class="text-[28px] font-black text-[#FFE600] leading-tight mt-1">
+            좋은 마무리
+          </p>
+        </div>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-300 font-medium break-keep">
+          단단한 매듭 없이 새로운 실을 엮을 수 없듯, 완벽한 도약은 언제나 충실한 마무리에서 비롯됩니다. 올 한 해 치열하게 달려온 스스로의 수고를 다독이고, 묵은 기운을 유쾌하게 비워내며 2027년의 행운을 맞이할 준비를 마치는 <strong class="text-[#FFE600]">특별한 연말 의식(Ritual)</strong>을 제안합니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 07: 운칠기삼 (1회차 운칠 부스(사주) + 3회차 기삼 부스)
+    -------------------------------------------------------- -->
+    <section id="chapter-7" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#111111] text-[#FFE600] text-[11px] font-black px-2.5 py-0.5 rounded-md">07</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">UN-CHIL GI-SAM STRUCTURE</span>
+      </div>
+
+      <div class="ppt-frame p-5 bg-white">
+        <div class="inline-flex items-center gap-1.5 bg-[#FFE600] border-2 border-[#111111] text-[#111111] text-[11px] font-black px-3 py-1 rounded-full mb-3">
+          <span>⚖️</span> 70% LUCK + 30% SKILL
+        </div>
+
+        <h2 class="text-[24px] leading-[1.3] font-black text-[#111111] mb-3 break-keep">
+          “<span class="underline decoration-[#FFE600] decoration-[6px] underline-offset-2">운칠기삼(運七技三)</span>:<br/>
+          좋은 시작의 운칠, 좋은 마무리의 기삼”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-5 break-keep">
+          세상의 모든 성취가 7할의 운(運)과 3할의 노력·기술(技)로 완성되듯, 우리의 프로젝트 역시 두 축의 균형으로 설계되었습니다. 설레는 첫 출발을 여는 <strong class="text-[#111111]">‘좋은 시작’이 곧 운칠(運七)</strong>이며, 스스로의 손으로 한 해를 단단히 매듭짓는 <strong class="text-[#111111]">‘좋은 마무리’가 곧 기삼(技三)</strong>에 해당합니다.
+        </p>
+
+        <!-- PPT 슬라이드 구조 재현: 1회차 운칠 부스(사주) + 3회차 기삼 부스 -->
+        <div class="border-2 border-[#111111] rounded-2xl bg-[#FFFDF2] p-4 mb-4">
+          <div class="text-center text-[11px] font-black text-neutral-500 tracking-wider mb-3">
+            2026 운빨능력 검정시험 · 부스 구성 공식
+          </div>
+
+          <div class="grid grid-cols-[1fr_auto_1.25fr] gap-2 items-center">
+            <!-- 좌측: 1회차 운칠 부스 (사주) -->
+            <div class="bg-white border-2 border-[#111111] rounded-2xl p-3 text-center shadow-[2px_2px_0_#111] h-full flex flex-col justify-between">
+              <div>
+                <span class="inline-block bg-[#FFE600] border border-[#111111] text-[10px] font-black px-2 py-0.5 rounded-full mb-2">
+                  좋은 시작 · 運七
+                </span>
+                <!-- 캐릭터 배지 1개 -->
+                <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-[#FFF380] border-2 border-[#111111] flex items-center justify-center relative">
+                  <span class="text-xl">🔮</span>
+                  <span class="absolute -bottom-1 -right-1 bg-[#111111] text-[#FFE600] text-[9px] font-black px-1.5 rounded">1회</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-[12px] font-extrabold text-[#FF6B00] leading-tight">1회차</div>
+                <div class="text-[14px] font-black text-[#111111] leading-snug mt-0.5">운칠 부스<br/><span class="text-xs font-extrabold">(사주)</span></div>
+              </div>
+            </div>
+
+            <!-- 중앙: + 기호 -->
+            <div class="text-2xl font-black text-[#111111] select-none px-0.5">+</div>
+
+            <!-- 우측: 3회차 기삼 부스 -->
+            <div class="bg-white border-2 border-[#111111] rounded-2xl p-3 text-center shadow-[2px_2px_0_#111] h-full flex flex-col justify-between">
+              <div>
+                <span class="inline-block bg-[#111111] text-[#FFE600] text-[10px] font-black px-2 py-0.5 rounded-full mb-2">
+                  좋은 마무리 · 技三
+                </span>
+                <!-- 캐릭터 배지 3개 (3회차 시각화) -->
+                <div class="flex items-center justify-center gap-1 mb-2 h-12">
+                  <div class="w-9 h-9 rounded-full bg-[#FFE600] border-2 border-[#111111] flex items-center justify-center text-sm shadow-[1px_1px_0_#111]">
+                    ✍️
+                  </div>
+                  <div class="w-9 h-9 rounded-full bg-[#FFEDD5] border-2 border-[#111111] flex items-center justify-center text-sm shadow-[1px_1px_0_#111]">
+                    🧩
+                  </div>
+                  <div class="w-9 h-9 rounded-full bg-[#E0F2FE] border-2 border-[#111111] flex items-center justify-center text-sm shadow-[1px_1px_0_#111]">
+                    💡
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="text-[12px] font-extrabold text-[#FF6B00] leading-tight">3회차</div>
+                <div class="text-[14px] font-black text-[#111111] leading-snug mt-0.5">기삼 부스<br/><span class="text-xs font-bold text-neutral-500">(체험 3회차)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 상세 설명 리스트 -->
+        <div class="space-y-2.5 text-xs">
+          <div class="bg-[#FFE600]/25 border border-[#111111] rounded-xl p-3 flex items-start gap-2.5">
+            <span class="bg-[#FFE600] border border-[#111111] font-black px-2 py-0.5 rounded text-[11px] shrink-0">운칠</span>
+            <p class="text-neutral-800 font-semibold leading-relaxed">
+              <strong class="text-[#111111]">1회차 운칠 부스(사주):</strong> 나의 타고난 흐름과 새해의 기운을 읽어내며 기분 좋은 시작의 방향을 여는 핵심 사주 체험입니다.
+            </p>
+          </div>
+          <div class="bg-neutral-50 border border-[#111111] rounded-xl p-3 flex items-start gap-2.5">
+            <span class="bg-[#111111] text-[#FFE600] font-black px-2 py-0.5 rounded text-[11px] shrink-0">기삼</span>
+            <p class="text-neutral-800 font-semibold leading-relaxed">
+              <strong class="text-[#111111]">3회차 기삼 부스:</strong> 총 3회차에 걸쳐 직접 참여하고 경험하는 다채로운 기삼(技三) 콘텐츠를 통해 한 해의 마무리를 스스로 완성합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------
+         CHAPTER 08: 그래서 준비한 마지막 부스는 사주 + 외부 사전예약 링크
+    -------------------------------------------------------- -->
+    <section id="chapter-8" class="reveal">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="bg-[#FF6B00] text-white text-[11px] font-black px-2.5 py-0.5 rounded-md">08 · FINALE</span>
+        <span class="text-xs font-extrabold tracking-wider text-neutral-500">SAJU BOOTH RESERVATION</span>
+      </div>
+
+      <div class="ppt-frame p-5 bg-white">
+        <div class="flex flex-wrap gap-1.5 mb-3">
+          <span class="text-[11px] font-black bg-[#FFE600] border border-[#111111] px-2 py-0.5 rounded-md">사주명리</span>
+          <span class="text-[11px] font-black bg-[#FFFDF2] border border-[#111111] px-2 py-0.5 rounded-md">관상</span>
+          <span class="text-[11px] font-black bg-[#FFFDF2] border border-[#111111] px-2 py-0.5 rounded-md">타로</span>
+          <span class="text-[11px] font-black bg-[#FFFDF2] border border-[#111111] px-2 py-0.5 rounded-md">오행·개운처방</span>
+        </div>
+
+        <h2 class="text-[24px] leading-[1.3] font-black text-[#111111] mb-3 break-keep">
+          “그래서 준비한<br/>
+          마지막 부스는 <span class="text-[#FF6B00] underline decoration-[#FFE600] decoration-[6px]">사주</span>”
+        </h2>
+
+        <p class="text-[15px] leading-[1.72] text-neutral-700 font-medium mb-5 break-keep">
+          한 해의 끝자락, 오행과 명리로 나만의 흐름을 읽고 2027년을 맞이할 개운의 힌트를 얻는 피날레 부스입니다. 전통 사주명리부터 직관적인 관상·타로, 나만의 운테리어·개운처방까지 당신만의 고유한 기운을 입체적으로 읽어내어 새해를 여는 가장 확실한 인사이트를 선물합니다.
+        </p>
+
+        <!-- 사주 부스 소개 & 외부 사전예약 이동 카드 -->
+        <div class="border-2 border-[#111111] rounded-2xl bg-[#FFFDF2] p-4">
+          <div class="flex items-center justify-between border-b-2 border-[#111111] pb-3 mb-3.5">
+            <div>
+              <span class="text-[10px] font-black text-[#FF6B00] block">2026 운빨 능력 검정 시험</span>
+              <h3 class="text-lg font-black text-[#111111]">사주 부스 사전예약 안내</h3>
+            </div>
+            <span class="text-[11px] font-extrabold bg-[#FFE600] border border-[#111111] px-2.5 py-1 rounded-lg">
+              선착순 마감
+            </span>
+          </div>
+
+          <!-- 운영 시간 안내 박스 -->
+          <div class="bg-white border-2 border-[#111111] rounded-xl p-3.5 mb-4 text-xs">
+            <div class="font-black text-[#111111] mb-1.5 flex items-center gap-1.5">
+              <span>⏰</span> 운영 시간 및 소요 안내
+            </div>
+            <div class="grid grid-cols-1 gap-1 text-neutral-700 font-semibold">
+              <div>• <strong class="text-[#111111]">금요일</strong> 14:00 - 21:00</div>
+              <div>• <strong class="text-[#111111]">토요일</strong> 11:00 - 21:00</div>
+              <div>• <strong class="text-[#111111]">일요일</strong> 11:00 - 20:00</div>
+            </div>
+            <div class="mt-2 pt-1.5 border-t border-dashed border-neutral-300 text-[11px] text-[#FF6B00] font-bold">
+              * 1회차당 약 15분 소요되며, 정시 입장을 권장합니다.
+            </div>
+          </div>
+
+          <!-- 공식 사전예약 페이지 이동 CTA 버튼 -->
+          <a href="https://nicedaycyj-star.github.io/sazu/" target="_blank" rel="noopener noreferrer"
+            class="btn-brutal w-full py-4 px-4 rounded-xl bg-[#FFE600] hover:bg-[#ffea29] text-[#111111] font-black text-[15px] flex items-center justify-center gap-2">
+            <span>🔮</span>
+            <span>사주 부스 사전예약 신청하러가기</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17L17 7"></path>
+              <path d="M7 7h10v10"></path>
+            </svg>
+          </a>
+          <p class="text-center text-[11px] font-bold text-neutral-500 mt-2.5">
+            클릭 시 공식 사전예약 페이지로 이동합니다
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       ENDING / FOOTER SECTION (Slide 12 오마주)
+  ========================================================== -->
+  <footer class="bg-[#FFE600] border-t-2 border-[#111111] px-5 pt-10 pb-12 text-center">
+    <!-- 원형 운빨시험 엠블럼 -->
+    <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0_#111] flex flex-col items-center justify-center">
+      <span class="text-2xl leading-none">🍀</span>
+      <span class="text-[11px] font-black tracking-tighter mt-1 text-[#111111]">운빨시험</span>
+    </div>
+
+    <!-- 감사 인사 프레임 카드 -->
+    <div class="ppt-frame p-6 bg-white mb-6">
+      <h2 class="text-2xl font-black text-[#111111] mb-1.5">감사합니다!</h2>
+      <p class="text-sm font-extrabold text-[#FF6B00]">질의응답 및 현장 안내</p>
+      <p class="text-xs text-neutral-600 font-medium mt-3 leading-relaxed">
+        2026년 12월, 가장 유쾌한 마무리의 순간에서 만나요.<br/>
+        당신의 순수한 운빨과 새로운 시작을 응원합니다.
+      </p>
+    </div>
+
+    <div class="text-xs font-extrabold text-[#111111] tracking-tight">
+      2026 운빨능력 검정 시험 · 무드커넥트 × 그라운드 비
+    </div>
+    <div class="text-[11px] font-semibold text-[#111111]/70 mt-1">
+      커넥서님 프로젝트 #3
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // 1. 스크롤 진행도 바 & IntersectionObserver 애니메이션
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('scrollProgress').style.width = `${progress}%`;
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.14 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // 2. 히어로 미니 위젯: 오늘의 순수 운빨 측정기
+  const luckyPool = [
+    { score: '순수 운빨 지수 98% (대길)', item: '개운 힌트: 동명동 골목 산책 후 따뜻한 아메리카노 한 잔!' },
+    { score: '순수 운빨 지수 92% (상길)', item: '개운 힌트: 책상 위 옐로우 포인트 소품으로 운테리어 완성하기' },
+    { score: '순수 운빨 지수 95% (초대길)', item: '개운 힌트: 2026년 12월, 소중한 사람과 함께 사주 부스 방문하기' },
+    { score: '순수 운빨 지수 89% (길운)', item: '개운 힌트: 미뤄뒀던 연말 정리를 끝내면 뜻밖의 귀인이 찾아옵니다' },
+    { score: '순수 운빨 지수 100% (신묘한힘)', item: '개운 힌트: 오늘 당신이 내리는 모든 선택이 2027년의 복이 됩니다!' }
+  ];
+
+  function drawDailyLuck() {
+    const pick = luckyPool[Math.floor(Math.random() * luckyPool.length)];
+    const box = document.getElementById('luckyResultBox');
+    box.style.transform = 'scale(0.96)';
+    setTimeout(() => {
+      document.getElementById('luckyScoreText').textContent = `✨ ${pick.score}`;
+      document.getElementById('luckyItemText').textContent = pick.item;
+      document.getElementById('luckyBtnLabel').textContent = '다시 한 번 운빨 뽑기';
+      box.style.backgroundColor = '#FFE600';
+      box.style.transform = 'scale(1)';
+    }, 120);
+  }
+
+  // 3. Chapter 03 인터랙티브 문화 탄생 프로세스
+  const flowDescriptions = [
+    '✨ 각자의 취향과 호기심을 가진 개인들이 동네의 감각적인 공간으로 모여듭니다.',
+    '🤝 공통된 관심사를 매개로 느슨하지만 단단한 연대, "우리만의 작은 모임"이 형성됩니다.',
+    '🏙️ 모임의 에너지가 골목에 축적되며 동명동·성수동 같은 대체 불가능한 로컬 문화가 탄생합니다.'
+  ];
+
+  function selectFlowStep(idx) {
+    for (let i = 0; i < 3; i++) {
+      const btn = document.getElementById(`flow-btn-${i}`);
+      if (i === idx) {
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-[#FFE600]');
+      } else {
+        btn.classList.remove('bg-[#FFE600]');
+        btn.classList.add('bg-white');
+      }
+    }
+    document.getElementById('flowDescBox').textContent = flowDescriptions[idx];
+  }
+
+  // 4. Chapter 04 운테리어 · 개운템 탭 전환
+  const luckTabsData = {
+    unterier: {
+      icon: '🪴',
+      title: '운테리어 (운 + 인테리어)',
+      desc: '공간의 배치와 컬러, 오브제 하나를 바꾸며 일상의 기운과 흐름을 긍정적으로 전환하는 2026 대표 라이프스타일 트렌드입니다.'
+    },
+    gaewun: {
+      icon: '🧿',
+      title: '개운템 (開運 Item)',
+      desc: '지니고 있는 것만으로도 심리적 안정감과 기분 좋은 징크스를 선물하며, 일상의 작은 행운을 끌어당기는 나만의 시그니처 오브제입니다.'
+    },
+    exam: {
+      icon: '📝',
+      title: '2026 운빨능력 검정 시험',
+      desc: '단순한 운세 풀이를 넘어, 한 해를 유쾌하게 결산하고 새해의 방향성을 함께 나누는 참여형 로컬 커뮤니티 페스티벌입니다.'
+    }
+  };
+
+  function switchLuckTab(key) {
+    ['unterier', 'gaewun', 'exam'].forEach(k => {
+      const btn = document.getElementById(`tab-${k}`);
+      if (k === key) {
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-[#FFE600]');
+      } else {
+        btn.classList.remove('bg-[#FFE600]');
+        btn.classList.add('bg-white');
+      }
+    });
+
+    const data = luckTabsData[key];
+    document.getElementById('luckTabContent').innerHTML = `
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="text-lg">${data.icon}</span>
+        <span class="font-black text-sm text-[#111111]">${data.title}</span>
+      </div>
+      <p class="text-xs leading-relaxed text-neutral-700 font-medium">${data.desc}</p>
+    `;
+  }
+
+  // 5. Chapter 05 2026년 12월 vs 2027년 포커스 인터랙션
+  function focusYear(year) {
+    const c26 = document.getElementById('card2026');
+    const c27 = document.getElementById('card2027');
+    if (year === '2026') {
+      c26.className = 'year-card cursor-pointer border-2 border-[#111111] rounded-2xl p-4 bg-[#FFE600] shadow-[3px_3px_0_#111] text-center scale-100';
+      c27.className = 'year-card cursor-pointer border-2 border-neutral-300 rounded-2xl p-4 bg-neutral-50 text-center opacity-65 scale-95';
+    } else {
+      c27.className = 'year-card cursor-pointer border-2 border-[#111111] rounded-2xl p-4 bg-white shadow-[3px_3px_0_#111] text-center scale-100';
+      c26.className = 'year-card cursor-pointer border-2 border-[#111111] rounded-2xl p-4 bg-[#FFE600]/60 text-center scale-95';
+    }
+  }
+</script>
+
+</body>
+</html>
